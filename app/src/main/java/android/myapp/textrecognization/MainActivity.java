@@ -2,6 +2,7 @@ package android.myapp.textrecognization;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -138,5 +139,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+    public String[] getSubjectList(){
+        Resources res = getResources();
+        String[] subjects = res.getStringArray(R.array.subject_names);
+        return subjects;
     }
 }
