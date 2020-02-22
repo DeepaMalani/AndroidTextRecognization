@@ -28,4 +28,8 @@ dependencies {
 
     //Dependency for Google Vision Library
     implementation 'com.google.android.gms:play-services-vision:19.0.0'
+
+    //Dependency for room database
+    implementation "androidx.room:room-runtime:2.2.4"
+    annotationProcessor "androidx.room:room-compiler:2.2.4"
 }
