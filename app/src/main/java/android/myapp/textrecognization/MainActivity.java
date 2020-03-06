@@ -12,6 +12,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -22,6 +23,9 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 100;
     private TextView mTextView;
     private Button mButton;
+    private Button mRecognize;
     private String mDetectedText = "";
+
+    private String[] mSubjects;
+
+    private List<String> mTextList;
+
+     TextRecognizer mTextRecognizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,27 +55,32 @@ public class MainActivity extends AppCompatActivity {
 
         //Start camera to detect the text
         startCameraSource();
+
         mButton = findViewById(R.id.button_detect_text);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTextView.setText(mDetectedText);
-            }
-        });
+
+       mRecognize = findViewById(R.id.button_recognize_text);
+       mRecognize.setVisibility(View.INVISIBLE);
+
+
+        mSubjects = getSubjectList();
+
+        mTextList = new ArrayList<String>(Arrays.asList(mSubjects));
 
 
     }
     private void startCameraSource() {
 
         //Create the TextRecognizer
-        final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+       // final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
-        if (!textRecognizer.isOperational()) {
+        mTextRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+
+        if (!mTextRecognizer.isOperational()) {
             Log.w(TAG, "Detector dependencies not loaded yet");
         } else {
 
             //Initialize camerasource to use high resolution and set Autofocus on.
-            mCameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
+            mCameraSource = new CameraSource.Builder(getApplicationContext(), mTextRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
                     .setRequestedPreviewSize(1280, 1024)
                     .setAutoFocusEnabled(true)
@@ -108,41 +124,146 @@ public class MainActivity extends AppCompatActivity {
             });
 
             //Set the TextRecognizer's Processor.
-            textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
-                @Override
-                public void release() {
-                }
-
-                /**
-                 * Detect all the text from camera using TextBlock and the values into a stringBuilder
-                 * which will then be set to the textView.
-                 * */
-                @Override
-                public void receiveDetections(Detector.Detections<TextBlock> detections) {
-                    final SparseArray<TextBlock> items = detections.getDetectedItems();
-                    if (items.size() != 0 ){
-
-                        mTextView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                StringBuilder stringBuilder = new StringBuilder();
-                                for(int i=0;i<items.size();i++){
-                                    TextBlock item = items.valueAt(i);
-                                    stringBuilder.append(item.getValue());
-                                    stringBuilder.append("\n");
-                                }
-
-                                mDetectedText = stringBuilder.toString();
-                            }
-                        });
-                    }
-                }
-            });
+//            textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
+//                @Override
+//                public void release() {
+//                }
+//
+//                /**
+//                 * Detect all the text from camera using TextBlock and the values into a stringBuilder
+//                 * which will then be set to the textView.
+//                 * */
+//                @Override
+//                public void receiveDetections(Detector.Detections<TextBlock> detections) {
+//                    final SparseArray<TextBlock> items = detections.getDetectedItems();
+//                    if (items.size() != 0 ){
+//
+//                        StringBuilder stringBuilder = new StringBuilder();
+//                        for(int i=0;i<items.size();i++){
+//                            TextBlock item = items.valueAt(i);
+//
+//                            String s = item.getValue();
+//
+//                           // Toast.makeText(MainActivity.this,s, Toast.LENGTH_SHORT).show();
+//
+//                            if(mList.contains(s))
+//                            {
+//                              //  Toast.makeText(MainActivity.this,s, Toast.LENGTH_SHORT).show();
+//                                stringBuilder.append(s);
+//                                stringBuilder.append("\n");
+//
+//                            }
+//                        }
+//                        mDetectedText = stringBuilder.toString();
+//
+////                        mTextView.post(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                StringBuilder stringBuilder = new StringBuilder();
+////                                for(int i=0;i<items.size();i++){
+////                                    TextBlock item = items.valueAt(i);
+////
+////                                    String s = item.getValue();
+////
+////                                    if(mList.contains(s))
+////                                    {
+////                                        Toast.makeText(MainActivity.this,s, Toast.LENGTH_SHORT).show();
+////                                        stringBuilder.append(s);
+////                                        stringBuilder.append("\n");
+////
+////                                    }
+////
+////
+////                                }
+////
+////                                mDetectedText = stringBuilder.toString();
+////                            }
+////                        });
+//                    }
+//                }
+//            });
         }
     }
     public String[] getSubjectList(){
         Resources res = getResources();
         String[] subjects = res.getStringArray(R.array.subject_names);
+
         return subjects;
     }
+
+    public void detect(){
+
+
+        mTextRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
+            @Override
+            public void release() {
+
+            }
+
+            /**
+             * Detect all the text from camera using TextBlock and the values into a stringBuilder
+             * which will then be set to the textView.
+             * */
+            @Override
+            public void receiveDetections(Detector.Detections<TextBlock> detections) {
+
+                final SparseArray<TextBlock> items = detections.getDetectedItems();
+                if (items.size() != 0 ){
+
+                    mTextView.post(new Runnable() {
+                                       @Override
+
+                               public void run() {
+                                   StringBuilder stringBuilder = new StringBuilder();
+                                   mTextList = new ArrayList<String>();
+                                   for (int i = 0; i < items.size(); i++) {
+                                       TextBlock item = items.valueAt(i);
+
+                                       String s = item.getValue();
+                                       mTextList.add(s);
+
+                                   // Toast.makeText(MainActivity.this,s, Toast.LENGTH_SHORT).show();
+
+
+                                   //  {
+                                   //
+                                   //stringBuilder.append(s);
+                                   //stringBuilder.append("\n");
+
+                                               // }
+                                           }
+                                           mRecognize.setVisibility(View.VISIBLE);
+                                       }
+                                   });
+                    //mDetectedText = stringBuilder.toString();
+
+
+                }
+
+            }
+        });
+    }
+    public void detectText(View view){
+        detect();
+
+        //mTextView.setText(mDetectedText);
+
+        //Intent intent = new Intent(MainActivity.this,DisplayCourseDetailsActivity.class);
+//                intent.putExtra("course_names",mDetectedText);
+//                startActivity(intent);
+
+
+
+    }
+    public void recognizeText(View view){
+        if(mTextList != null) {
+            for (String s : mSubjects) {
+                if (mTextList.contains(s))
+                    Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
+            mRecognize.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
 }
