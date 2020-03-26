@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,37 +8,36 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!--<SurfaceView-->
+        <!--android:id="@+id/surface_camera_preview"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="4" />-->
+
     <SurfaceView
         android:id="@+id/surface_camera_preview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4" />
+        android:layout_height="match_parent"
+         />
 
 
-    <TextView
-        android:id="@+id/tv_result"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:scrollbars="vertical"
-        android:textSize="18sp" />
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/button_detect_text"-->
+    <!--android:text="detect text"-->
+    <!--android:onClick="detectText"-->
+    <!--/>-->
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_detect_text"
-        android:text="detect text"
-        android:onClick="detectText"
-        />
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_recognize_text"
-        android:text="recognize text"
-        android:onClick="recognizeText"
+      android:id="@+id/fab_detect"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end|bottom"
+      android:src="@drawable/ic_add"
+      android:contentDescription="@string/detect_text"
+      android:layout_margin="16dp"
+     />
 
-        />
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

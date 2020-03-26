@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">TextRecognization</string>
+    <string name="app_name">Transcript Reader</string>
+    <string name="subjects">Prerequisite Subjects</string>
+    <string name="detect_text">Detect Text</string>
 </resources>

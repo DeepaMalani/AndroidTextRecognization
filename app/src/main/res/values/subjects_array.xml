@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="subject_names">
-        <item>Data Structure</item>
-        <item>SOFTWARE</item>
-        <item>MANAGEMENT</item>
-        <item>Operating System</item>
-        <item>Graphics</item>
-        <item>A</item>
-        <item>B</item>
+        <item>data structure</item>
+        <item>software management</item>
+        <item>operating system</item>
+        <item>graphics</item>
+        <item>programming language</item>
+
     </string-array>
 </resources>
